@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ОКН Романов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	 <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/e/e5/Folding_Map_Flat_Icon_Vector_v2.svg">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .menu {
+            position: absolute;
+            width: 250px;
+            height: 100vh;
+            padding: 10px;
+            background-color: rgba(195, 217, 219, 0.8);
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #033E8C;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            z-index: 100;
+            overflow: hidden;
+        }
+        
+        .menu.hidden {
+            transform: translateX(-100%);
+        }
+        
+        .toggle-button {
+            position: absolute;
+            top: 20px;
+            left: 250px;
+            background-color: #D94B2B;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: left 0.3s ease;
+            z-index: 101;
+        }
+        
+        .menu.hidden + .toggle-button {
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="toggle-button" class="toggle-button" onclick="toggleMenu()"><i id="menu-icon" class="fa fa-bars"></i></button>
+    <div id="menu" class="menu">
+        <h3 style="text-align: center;">Условные обозначения</h3>
+        <p>Описание...</p>
+    </div>
+    
+    <div id="map"></div>
+    
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            const button = document.getElementById('toggle-button');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                button.style.left = '10px';
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                button.style.left = '250px';
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZWthdGVyaW5hLXpodXJhdmxldmEiLCJhIjoiY2w5YTM4azI4MGpmNDN2bzZxNmF4aXB6NiJ9.eKCP_ow0zyYyT3-uKgeLnw';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/ekaterina-zhuravleva/cm1zftgak01dj01qv02l9chhn',
+            center: [39.547297643611124,57.884195493548944],
+            zoom: 13.5,
+            pitch: 0,
+            bearing: 40,
+            antialias: true
+        });
+		
+		// Добавление строки поиска
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false,
+            placeholder: 'Поиск места',
+            language: 'ru'
+        });
+
+        map.addControl(geocoder, 'top-left');
+
+        // Добавление инструментов приближения и отдаления
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+        // Добавление кнопки полного экрана
+        map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+
+        // Добавление кнопки определения местоположения
+        map.addControl(new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        }), 'top-right');
+    </script>
+</body>
+</html>
